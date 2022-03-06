@@ -1,7 +1,6 @@
 package com.beyt.reflection.dto;
 
-public class UserDTO {
-    private Long id;
+public class UserDTO extends BaseDTO {
     private String name;
     private String phone;
 
@@ -12,14 +11,6 @@ public class UserDTO {
         this.id = id;
         this.name = name;
         this.phone = phone;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -36,5 +27,14 @@ public class UserDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 }

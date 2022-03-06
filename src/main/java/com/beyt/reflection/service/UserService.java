@@ -3,11 +3,12 @@ package com.beyt.reflection.service;
 import com.beyt.reflection.dto.UserDTO;
 import com.beyt.reflection.exception.UserNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +24,14 @@ public class UserService {
     }
 
 
+    public List<UserDTO> getUserList() throws UserNotFoundException {
+        if (CollectionUtils.isEmpty(userList)) {
+            throw new UserNotFoundException();
+        }
+
+        return userList;
+    }
+
     public UserDTO getUserById(Long id) throws UserNotFoundException {
         Map<Long, UserDTO> userMap = getUserMap();
 
@@ -34,6 +43,6 @@ public class UserService {
     }
 
     private Map<Long, UserDTO> getUserMap() {
-        return userList.stream().collect(Collectors.toMap(UserDTO::getId, u -> u));
+        return userList.stream().collect(Collectors.toMap(UserDTO::getId, Function.identity()));
     }
 }
