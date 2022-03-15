@@ -25,6 +25,16 @@ public final class GenericTypeResolverUtil {
     private GenericTypeResolverUtil() {
     }
 
+    public static GenericsTypesTreeResult resolveClassGenericsTree(Class<?> clazz) {
+        Assert.notNull(clazz, "Class must not be null");
+        ResolvableType resolvableType = ResolvableType.forClass(clazz);
+        if (!resolvableType.hasGenerics() || resolvableType.getType() instanceof WildcardType) {
+            return new GenericsTypesTreeResult(clazz, 0);
+        }
+
+        return getGenericsTypesTreeResult(clazz, resolvableType.getGenerics(), 0);
+    }
+
     public static GenericsTypesTreeResult resolveConstructorParameterGenericsTree(Constructor<?> constructor, Integer parameterIndex) {
         Assert.notNull(constructor, "Constructor must not be null");
         Assert.notNull(parameterIndex, "Parameter index must not be null");
