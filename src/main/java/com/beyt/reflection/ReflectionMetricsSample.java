@@ -40,6 +40,6 @@ public class ReflectionMetricsSample implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        timedTest();
+        //timedTest();
     }
 }

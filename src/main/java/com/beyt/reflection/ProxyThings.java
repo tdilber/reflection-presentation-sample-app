@@ -31,7 +31,7 @@ public class ProxyThings implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        proxyTest();
+        //proxyTest();
     }
 
     public static Class<?> getTargetClass(Object object) {
