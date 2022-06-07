@@ -1,48 +1,38 @@
 package com.beyt.reflection;
 
 import com.beyt.reflection.controller.UserController;
-import com.beyt.reflection.dto.BaseDTO;
-import com.beyt.reflection.dto.IdentityDTOInteface;
 import com.beyt.reflection.dto.UserDTO;
 import com.beyt.reflection.service.UserService;
 import com.beyt.reflection.util.GenericTypeResolverUtil;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ReflectionSample {
-    @SuppressWarnings("all")
-    public static void main(String[] args) {
-        try {
-            Class<UserDTO> clazz = (Class<UserDTO>)Class.forName("com.beyt.reflection.dto.UserDTO");
+@Component
+public class ReflectionFullClassPrintExample implements ApplicationRunner {
 
-            UserDTO userDTO  = clazz.newInstance();
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        printSomeClasses();
+    }
 
-            System.out.println(userDTO.toString());
-
-            System.out.println(clazz.getClass().getClass().getClass().getSimpleName());
-
-            System.out.println(IdentityDTOInteface.class.isAssignableFrom(userDTO.getClass()));
-            System.out.println(userDTO.getClass().isAssignableFrom(IdentityDTOInteface.class));
-
-            System.out.println(userDTO instanceof IdentityDTOInteface);
-            System.out.println(userDTO instanceof BaseDTO);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-       // if(true) return;
-
+    private void printSomeClasses() {
         System.out.println("---------------------");
         printClass(UserController.class);
         System.out.println("---------------------");
         printClass(UserService.class);
         System.out.println("---------------------");
         printClass(UserDTO.class);
+        System.out.println("---------------------");
+        printClass(ProxyThings.class);
+        System.out.println("---------------------");
+        printClass(ReflectionFullClassPrintExample.class);
     }
 
     private static void printClass(Class<?> clazz) {

@@ -4,7 +4,6 @@ import com.beyt.reflection.service.MetricsTestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
@@ -17,8 +16,16 @@ import java.lang.reflect.Proxy;
 @Component
 public class ProxyThings implements ApplicationRunner {
 
-    @Autowired
-    private MetricsTestService metricsTestService;
+    private final MetricsTestService metricsTestService;
+
+    public ProxyThings(MetricsTestService metricsTestService) {
+        this.metricsTestService = metricsTestService;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        //proxyTest();
+    }
 
     protected void proxyTest() {
         log.info(metricsTestService.getClass().getName());
@@ -27,11 +34,6 @@ public class ProxyThings implements ApplicationRunner {
         log.info("AopProxyUtils Proxy Resolver Class Result : {}", AopProxyUtils.ultimateTargetClass(metricsTestService));
         log.info("My Proxy Resolver Class Result : {}", getTargetClass(metricsTestService));
         log.info("Jhipster Proxy Resolver Class Result : {}", getTargetClassLikeJhipster(metricsTestService));
-    }
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        //proxyTest();
     }
 
     public static Class<?> getTargetClass(Object object) {

@@ -1,5 +1,6 @@
 package com.beyt.reflection;
 
+import com.beyt.reflection.annotation.MyFieldAutowired;
 import com.beyt.reflection.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -18,22 +19,25 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class ReflectionOperationalExamples {
+public class ReflectionOperationalExample {
 
     private String injectField = "Default Start Value";
+
+    @MyFieldAutowired
+    private String injectedWithAutowiredField = "Default Start Value";
 
     @EventListener(classes = {ContextRefreshedEvent.class, ContextStartedEvent.class, ContextStoppedEvent.class})
     public void handleMultipleEvents(ApplicationContextEvent applicationContextEvent) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        ReflectionOperationalExamples bean = applicationContext.getBean(ReflectionOperationalExamples.class);
+        ReflectionOperationalExample bean = applicationContext.getBean(ReflectionOperationalExample.class);
 
         //fieldInjectionExample(applicationContextEvent, bean);
 
         //methodInvokeExample(bean);
     }
 
-    private void methodInvokeExample(ReflectionOperationalExamples bean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = ReflectionOperationalExamples.class.getDeclaredMethod("f", Long.class, String.class, UserDTO.class);
+    private void methodInvokeExample(ReflectionOperationalExample bean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = ReflectionOperationalExample.class.getDeclaredMethod("invokingMethod", Long.class, String.class, UserDTO.class);
         List<String> invoke = (List<String>) method.invoke(bean, 50L, "Test Str " + randomValue(), new UserDTO(null, "Name " + randomValue(), null));
 
         log.info("Invoke Result => {}", String.join(", ", invoke));
@@ -44,7 +48,7 @@ public class ReflectionOperationalExamples {
         return UUID.randomUUID().toString().substring(0, 5);
     }
 
-    private static List<String> f(Long val, String s, UserDTO userDTO) {
+    private static List<String> invokingMethod(Long val, String s, UserDTO userDTO) {
         List<String> result = new ArrayList<>();
         result.add(val + "");
         result.add(s);
@@ -53,7 +57,7 @@ public class ReflectionOperationalExamples {
         return result;
     }
 
-    private void fieldInjectionExample(ApplicationContextEvent applicationContextEvent, ReflectionOperationalExamples bean) throws IllegalAccessException {
+    private void fieldInjectionExample(ApplicationContextEvent applicationContextEvent, ReflectionOperationalExample bean) throws IllegalAccessException {
         printInjectField(applicationContextEvent.getClass().getSimpleName());
 
         Class<?> targetClass = AopProxyUtils.ultimateTargetClass(bean);
@@ -75,19 +79,16 @@ public class ReflectionOperationalExamples {
     private void printInjectField(String eventName) {
         log.info("------------------------------------------------");
         log.info("Injected Field New Value : {} Event name : {}", injectField, eventName);
+        log.info("Injected Field With Autowired New Value : {} Event name : {}", injectedWithAutowiredField, eventName);
         log.info("------------------------------------------------");
     }
-
-//    private void myAutowired(ApplicationContext applicationContext) {
-//        applicationContext.getBeans
-//    }
 
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
-    public ReflectionOperationalExamples(ApplicationContext applicationContext) {
+    public ReflectionOperationalExample(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 

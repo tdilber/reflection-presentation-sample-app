@@ -15,6 +15,7 @@ import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -102,6 +103,10 @@ public final class GenericTypeResolverUtil {
         }
 
         public String printResult() {
+            if (Objects.isNull(clazz)) {
+                return "?";
+            }
+
             if (CollectionUtils.isEmpty(subClasses)) {
                 return clazz.getSimpleName();
             }

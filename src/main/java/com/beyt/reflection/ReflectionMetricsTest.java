@@ -3,17 +3,24 @@ package com.beyt.reflection;
 
 import com.beyt.reflection.service.MetricsTestService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class ReflectionMetricsSample implements ApplicationRunner {
+public class ReflectionMetricsTest implements ApplicationRunner {
 
-    @Autowired
-    private MetricsTestService metricsTestService;
+    private final MetricsTestService metricsTestService;
+
+    public ReflectionMetricsTest(MetricsTestService metricsTestService) {
+        this.metricsTestService = metricsTestService;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        //timedTest();
+    }
 
     protected void timedTest() {
         log.info("--------------- Metrics Starting ------------------");
@@ -36,10 +43,5 @@ public class ReflectionMetricsSample implements ApplicationRunner {
         metricsTestService.reflectionFindAllTime();
         metricsTestService.reflectionFindAllTime();
         log.info("--------------- Metrics End ------------------");
-    }
-
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        //timedTest();
     }
 }
