@@ -3,6 +3,10 @@ package com.beyt.reflection;
 import com.beyt.reflection.dto.BaseDTO;
 import com.beyt.reflection.dto.IdentityDTOInteface;
 import com.beyt.reflection.dto.UserDTO;
+import com.beyt.reflection.dto.enumeration.UserStatus;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class BasicReflectionExample {
 
@@ -24,8 +28,24 @@ public class BasicReflectionExample {
             System.out.println(userDTO instanceof IdentityDTOInteface);
             System.out.println(userDTO instanceof BaseDTO);
 
+            UserStatus[] enumConstants = UserStatus.class.getEnumConstants();
+            System.out.println(Arrays.asList(enumConstants).stream().map(Object::toString).collect(Collectors.joining(", ")));
+
+            System.out.println("Super class " + clazz.getSuperclass() + "\nSuper class " + clazz.getSuperclass().getSuperclass());
+
+            System.out.println("Interfaces class: " + printInterfaces(clazz.getInterfaces()));
+
+            System.out.println("Super Interfaces class: " + printInterfaces(clazz.getSuperclass().getInterfaces()));
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    private static String printInterfaces(Class<?>[] interfaces) {
+        if (interfaces.length == 0) {
+            return "none";
+        }
+
+        return Arrays.stream(interfaces).map(Class::toString).collect(Collectors.joining(", "));
     }
 }
