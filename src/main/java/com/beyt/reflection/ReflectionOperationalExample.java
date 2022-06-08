@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.*;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@Profile("operation")
 public class ReflectionOperationalExample {
 
     private String injectField = "Default Start Value";
@@ -31,11 +33,12 @@ public class ReflectionOperationalExample {
 
         ReflectionOperationalExample bean = applicationContext.getBean(ReflectionOperationalExample.class);
 
-        //fieldInjectionExample(applicationContextEvent, bean);
+        fieldInjectionExample(applicationContextEvent, bean);
 
-        //methodInvokeExample(bean);
+        methodInvokeExample(bean);
     }
 
+    @SuppressWarnings("unchecked")
     private void methodInvokeExample(ReflectionOperationalExample bean) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = ReflectionOperationalExample.class.getDeclaredMethod("invokingMethod", Long.class, String.class, UserDTO.class);
         List<String> invoke = (List<String>) method.invoke(bean, 50L, "Test Str " + randomValue(), new UserDTO(null, "Name " + randomValue(), null));
@@ -66,14 +69,14 @@ public class ReflectionOperationalExample {
 
         Field injecteeField = Arrays.stream(declaredFields).filter(f -> f.getName().equals("injectField")).findFirst().orElseThrow(IllegalStateException::new);
 
-        boolean accessible = injecteeField.isAccessible();
-//        boolean accessible = injecteeField.canAccess(bean);
+        // Set Operation
+        boolean accessible = injecteeField.canAccess(bean);
+
         injecteeField.setAccessible(true);
 
         injecteeField.set(bean, "New Value injected " + UUID.randomUUID());
 
         injecteeField.setAccessible(accessible);
-        printInjectField(applicationContextEvent.getClass().getSimpleName());
     }
 
     private void printInjectField(String eventName) {

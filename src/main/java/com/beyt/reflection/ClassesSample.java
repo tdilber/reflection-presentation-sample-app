@@ -8,13 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.base.StandardSystemProperty.JAVA_CLASS_PATH;
 import static com.google.common.base.StandardSystemProperty.PATH_SEPARATOR;
-import static java.util.logging.Level.WARNING;
 
 @SuppressWarnings("all")
 public class ClassesSample {
@@ -22,11 +20,17 @@ public class ClassesSample {
         // All Classses
         getAllClassesWithGuava();
 
+        System.out.println("----------------------------------");
+
         //Class Path
         System.out.println(JAVA_CLASS_PATH);
 
+        System.out.println("----------------------------------");
+
         //
         System.out.println(Stream.of(JAVA_CLASS_PATH.value().split(PATH_SEPARATOR.value())).collect(Collectors.joining("\n")));
+
+        System.out.println("----------------------------------");
 
         splitClassPath();
     }

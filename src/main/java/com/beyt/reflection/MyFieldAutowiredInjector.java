@@ -1,25 +1,26 @@
 package com.beyt.reflection;
 
 import com.beyt.reflection.annotation.MyFieldAutowired;
-import org.springframework.beans.BeansException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
 import java.util.UUID;
 
-@Lazy
-@Configuration
-public class MyFieldAutowiredInjector implements ApplicationContextAware {
+@Component
+@RequiredArgsConstructor
+public class MyFieldAutowiredInjector {
+    private final ApplicationContext applicationContext;
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//        customAutowired(applicationContext);
-    }
-
-    private void customAutowired(ApplicationContext applicationContext) {
+    @PostConstruct
+    private void customAutowired() {
         for (String beanName : applicationContext.getBeanDefinitionNames()) {
+            if (beanName.equalsIgnoreCase(this.getClass().getSimpleName())) {
+                continue;
+            }
+
             Object bean = applicationContext.getBean(beanName);
             /*
              * As you are using AOP check for AOP proxying. If you are proxying with Spring CGLIB (not via Spring AOP)
@@ -34,8 +35,10 @@ public class MyFieldAutowiredInjector implements ApplicationContextAware {
             try {
                 for (Field injecteeField : objClz.getDeclaredFields()) {
                     if (injecteeField.isAnnotationPresent(MyFieldAutowired.class)) {
-                        boolean accessible = injecteeField.isAccessible();
-                        // boolean accessible = injecteeField.canAccess(bean);
+
+                        // Set Operation
+                        boolean accessible = injecteeField.canAccess(bean);
+
                         injecteeField.setAccessible(true);
 
                         injecteeField.set(bean, "New Value injected " + UUID.randomUUID());
