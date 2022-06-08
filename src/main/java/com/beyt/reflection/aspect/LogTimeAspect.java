@@ -13,11 +13,11 @@ public class LogTimeAspect {
 
     @Around("@annotation(LogTime)")
     public Object trace(ProceedingJoinPoint joinPoint) throws Throwable {
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
         Object result = joinPoint.proceed();
-        long duration = System.currentTimeMillis() - startTime;
+        long duration = System.nanoTime() - startTime;
 
-        log.info("Method Name : {} Duration : {} ms", joinPoint.getSignature().getName(), duration);
+        log.info("Method Name : {} Duration : {} nano sec", joinPoint.getSignature().getName(), duration);
 
         return result;
     }
