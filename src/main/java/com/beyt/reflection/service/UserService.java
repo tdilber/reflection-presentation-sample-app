@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserService implements IUserService {
 
     public List<UserDTO> userList;
 
@@ -24,6 +24,7 @@ public class UserService {
     }
 
 
+    @Override
     public List<UserDTO> getUserList() throws UserNotFoundException {
         if (CollectionUtils.isEmpty(userList)) {
             throw new UserNotFoundException();
@@ -32,6 +33,7 @@ public class UserService {
         return userList;
     }
 
+    @Override
     public UserDTO getUserById(Long id) throws UserNotFoundException {
         Map<Long, UserDTO> userMap = getUserMap();
 

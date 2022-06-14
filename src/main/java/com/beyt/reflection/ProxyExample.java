@@ -1,39 +1,74 @@
 package com.beyt.reflection;
 
+import com.beyt.reflection.service.IUserService;
 import com.beyt.reflection.service.MetricsTestService;
+import com.beyt.reflection.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 @Slf4j
 @Component
-public class ProxyThings implements ApplicationRunner {
+@Profile("proxy")
+public class ProxyExample implements ApplicationRunner {
 
     private final MetricsTestService metricsTestService;
 
-    public ProxyThings(MetricsTestService metricsTestService) {
+    public ProxyExample(MetricsTestService metricsTestService) {
         this.metricsTestService = metricsTestService;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //proxyTest();
+        IUserService interfaceProxy = createProxy();
+        log.info("--------------- Spring Proxy ------------------");
+        proxyTest(metricsTestService);
+        log.info("---------------- Interface Proxy -----------------");
+        proxyTest(interfaceProxy);
+        log.info("--------------------------------------------------");
+        interfaceProxy.getUserById(1L);
+        interfaceProxy.getUserList();
     }
 
-    protected void proxyTest() {
-        log.info(metricsTestService.getClass().getName());
-        log.info("Is Proxy Class : {}", Proxy.isProxyClass(metricsTestService.getClass()));
-        log.info("isAopProxy : {}", AopUtils.isAopProxy(metricsTestService));
-        log.info("AopProxyUtils Proxy Resolver Class Result : {}", AopProxyUtils.ultimateTargetClass(metricsTestService));
-        log.info("My Proxy Resolver Class Result : {}", getTargetClass(metricsTestService));
-        log.info("Jhipster Proxy Resolver Class Result : {}", getTargetClassLikeJhipster(metricsTestService));
+    protected void proxyTest(Object object) {
+        log.info(object.getClass().getName());
+        log.info("Is Proxy Class : {}", Proxy.isProxyClass(object.getClass()));
+        log.info("isAopProxy : {}", AopUtils.isAopProxy(object));
+        log.info("AopProxyUtils Proxy Resolver Class Result : {}", AopProxyUtils.ultimateTargetClass(object));
+        log.info("My Proxy Resolver Class Result : {}", getTargetClass(object));
+        log.info("Jhipster Proxy Resolver Class Result : {}", getTargetClassLikeJhipster(object));
+    }
+
+    protected IUserService createProxy() {
+        return (IUserService) Proxy.newProxyInstance(
+                ProxyExample.class.getClassLoader(),
+                new Class[]{IUserService.class},
+                new TimeBasedInvocationHandler(new UserService()));
+    }
+
+    public static class TimeBasedInvocationHandler<T> implements InvocationHandler {
+        private T object;
+
+        public TimeBasedInvocationHandler(T object) {
+            this.object = object;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            log.info("Method Name : {} invoked at : {} nano", method.getName(), System.nanoTime());
+            Object result = method.invoke(object, args);
+            log.info("Method Name : {} invoked end at : {} nano result : {}", method.getName(), System.nanoTime(), result.toString());
+            return result;
+        }
     }
 
     public static Class<?> getTargetClass(Object object) {

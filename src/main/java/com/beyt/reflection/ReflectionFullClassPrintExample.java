@@ -39,7 +39,7 @@ public class ReflectionFullClassPrintExample implements ApplicationRunner {
         System.out.println("---------------------");
         printClass(UserDTO.class);
         System.out.println("---------------------");
-        printClass(ProxyThings.class);
+        printClass(ProxyExample.class);
         System.out.println("---------------------");
         printClass(ReflectionFullClassPrintExample.class);
         System.out.println("-------- Interface -------------");

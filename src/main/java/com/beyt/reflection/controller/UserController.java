@@ -2,8 +2,7 @@ package com.beyt.reflection.controller;
 
 import com.beyt.reflection.dto.UserDTO;
 import com.beyt.reflection.exception.UserNotFoundException;
-import com.beyt.reflection.service.MetricsTestService;
-import com.beyt.reflection.service.UserService;
+import com.beyt.reflection.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +17,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @GetMapping("/")
     public ResponseEntity<List<UserDTO>> getAllUsers() throws UserNotFoundException {
