@@ -23,6 +23,8 @@ import java.util.UUID;
 @Profile("operation")
 public class ReflectionOperationalExample {
 
+    private static String injectStaticField = "Default Start Static Value";
+
     private String injectField = "Default Start Value";
 
     @MyFieldAutowired
@@ -77,11 +79,16 @@ public class ReflectionOperationalExample {
         injecteeField.set(bean, "New Value injected " + UUID.randomUUID());
 
         injecteeField.setAccessible(accessible);
+
+        Field injecteeStaticField = Arrays.stream(declaredFields).filter(f -> f.getName().equals("injectStaticField")).findFirst().orElseThrow(IllegalStateException::new);
+
+        injecteeStaticField.set(null, "New Static Value injected " + UUID.randomUUID());
     }
 
     private void printInjectField(String eventName) {
         log.info("------------------------------------------------");
         log.info("Injected Field New Value : {} Event name : {}", injectField, eventName);
+        log.info("Injected Static Field New Value : {} Event name : {}", injectStaticField, eventName);
         log.info("Injected Field With Autowired New Value : {} Event name : {}", injectedWithAutowiredField, eventName);
         log.info("------------------------------------------------");
     }
